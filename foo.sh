@@ -1,23 +1,19 @@
 #!/bin/bash
 
-# [filepath]: solidityVersion
-declare -A mapFileSolVersion
+function findpragma () {
+    solcOutput=$(solc "$1" 2>&1)
+    pragma="$(echo "$solcOutput" | grep pragma)"
+    version=$(echo "$pragma" | grep -Eo '[0-9]\.[0-9].[0-9]+')
+    echo "$version"
+}
 
-# Extract the correct version from every *.sol file and put it in mapFileSolVersion array
-find ./ -name '*.sol' -print0 | while IFS= read -r -d '' file
-do
-  pragmas=$(grep "pragma" $file)
-  
-  versions=$(echo $pragmas | grep -Eo '[0-9]\.[0-9]+')
-  echo $file contains $versions
-done
+versionWanted=$(findpragma "./0aec2d7bb31d3c4271b1753da1e1b255464bf577_MasterChef.sol")
+echo $greeting
 
-# Run sol-select and slither for each file
-for i in "${!array[@]}"
-do
-echo i 
-echo "${array[$i]}"
-  solc-select install "${array[$i]}"
-  solc-select use "${array[$i]}"
-  slither "$i" --json /tmp/json
-done
+if [ ! -z "$versionWanted" ]
+then
+    solc-select install 0.6.2
+    solc-select use 0.6.2
+fi
+
+slither "./0aec2d7bb31d3c4271b1753da1e1b255464bf577_MasterChef.sol"
