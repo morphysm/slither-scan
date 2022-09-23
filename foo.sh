@@ -7,13 +7,18 @@ function findpragma () {
     echo "$version"
 }
 
-versionWanted=$(findpragma "./0aec2d7bb31d3c4271b1753da1e1b255464bf577_MasterChef.sol")
-echo $greeting
+# Extract the correct version from every *.sol file and put it in mapFileSolVersion array
+find ./ -name '*.sol' -print0 | while IFS= read -r -d '' file
+do
+    versionWanted=$(findpragma $file)
+    echo $greeting
 
-if [ ! -z "$versionWanted" ]
-then
-    solc-select install 0.6.2
-    solc-select use 0.6.2
-fi
+    if [ ! -z "$versionWanted" ]
+    then
+        solc-select install $versionWanted
+        solc-select use $versionWanted
+    fi
 
-slither "./0aec2d7bb31d3c4271b1753da1e1b255464bf577_MasterChef.sol"
+    slither $file
+
+done
