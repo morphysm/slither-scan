@@ -17,7 +17,7 @@ for i in "${!array[@]}"
 do
 echo i 
 echo "${array[$i]}"
-  #solc-select install "${array[$i]}"
-  #solc-select use "${array[$i]}"
-  #slither "$i" --json /tmp/json
+  solc-select install "${array[$i]}"
+  solc-select use "${array[$i]}"
+  slither "$i" --json /tmp/json
 done
